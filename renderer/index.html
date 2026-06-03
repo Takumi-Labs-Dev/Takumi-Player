@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>匠 Takumi Player</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Custom Titlebar -->
+  <div id="titlebar">
+    <span id="titlebar-title">
+      <img src="./assets/logo.png" alt="Takumi Player" id="titlebar-logo" />
+    </span>
+    <div id="window-controls">
+      <button onclick="window.takumi.minimize()" title="Minimize">─</button>
+      <button onclick="window.takumi.maximize()" title="Maximize">□</button>
+      <button id="btn-close" onclick="window.takumi.close()" title="Close">✕</button>
+    </div>
+  </div>
+
+  <!-- Welcome / Folder Select Overlay -->
+  <div id="overlay-welcome" class="overlay hidden">
+    <div class="overlay-card">
+      <img src="./assets/logo.png" alt="Takumi Player" class="overlay-logo" />
+      <p>Developed by <strong>Takumi Hub</strong></p>
+      <p class="sub">Select a folder to load your music library.</p>
+      <button class="btn-primary" id="btn-select-folder">Choose Music Folder</button>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" class="hidden">
+
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div id="sidebar-logo">
+        <img src="./assets/logo.png" alt="Takumi Player" id="sidebar-logo-img" />
+      </div>
+
+      <nav id="sidebar-nav">
+        <button class="nav-btn active" data-view="library">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Library
+        </button>
+        <button class="nav-btn" data-view="playlists">
+          <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          Playlists
+        </button>
+      </nav>
+
+      <div id="sidebar-folder">
+        <span id="folder-label" title="">No folder</span>
+        <div id="sidebar-folder-btns">
+          <button id="btn-change-folder" title="Change music folder">⟳ Change</button>
+          <button id="btn-refresh-folder" title="Rescan folder for new music">↺ Refresh</button>
+        </div>
+      </div>
+
+      <div id="sidebar-stats">
+        <span id="stat-tracks">0 tracks</span>
+      </div>
+    </aside>
+
+    <!-- Main Panel -->
+    <main id="main-panel">
+
+      <!-- Library View -->
+      <section id="view-library" class="view active">
+        <div class="view-header">
+          <h2>Library</h2>
+          <div class="search-wrap">
+            <input type="text" id="search-input" placeholder="Search tracks…" autocomplete="off" />
+          </div>
+          <button class="btn-icon" id="btn-add-to-playlist-sel" title="Add selected to playlist" style="display:none">+ Playlist</button>
+        </div>
+
+        <div id="track-list-wrap">
+          <div id="track-list-header">
+            <span class="col-num">#</span>
+            <span class="col-title">Title</span>
+            <span class="col-folder">Folder</span>
+            <span class="col-ext">Format</span>
+          </div>
+          <div id="track-list"></div>
+          <div id="track-empty" class="empty-state hidden">No tracks found.</div>
+        </div>
+      </section>
+
+      <!-- Playlists View -->
+      <section id="view-playlists" class="view hidden">
+        <div class="view-header">
+          <h2>Playlists</h2>
+          <button class="btn-primary small" id="btn-new-playlist">+ New Playlist</button>
+        </div>
+        <div id="playlists-container">
+          <div id="playlists-sidebar">
+            <div id="playlist-list"></div>
+          </div>
+          <div id="playlist-detail" class="hidden">
+            <div id="playlist-detail-header">
+              <h3 id="playlist-detail-name"></h3>
+              <span id="playlist-detail-count"></span>
+              <button class="btn-icon danger" id="btn-delete-playlist">Delete</button>
+            </div>
+            <div id="playlist-track-list"></div>
+          </div>
+          <div id="playlist-empty-state" class="empty-state">
+            <p>No playlists yet.<br>Create one above.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ─── Now Playing Bar ─────────────────────────────────── -->
+  <div id="player-bar" class="hidden">
+
+    <div id="player-track-info">
+      <div id="player-disc">
+        <div id="disc-ring"></div>
+        <div id="disc-center"></div>
+      </div>
+      <div id="player-meta">
+        <span id="player-title">—</span>
+        <span id="player-sub">Takumi Player</span>
+      </div>
+    </div>
+
+    <div id="player-controls-wrap">
+      <div id="player-controls">
+        <button class="ctrl-btn" id="btn-shuffle" title="Shuffle">
+          <svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20l16-16M16 21h5v-5M4 4l6 6m4 4 6 6"/></svg>
+        </button>
+        <button class="ctrl-btn" id="btn-prev" title="Previous">
+          <svg viewBox="0 0 24 24"><path d="M19 20 9 12l10-8v16ZM5 4v16"/></svg>
+        </button>
+        <button class="ctrl-btn main" id="btn-play" title="Play / Pause">
+          <svg id="icon-play" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+          <svg id="icon-pause" class="hidden" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        </button>
+        <button class="ctrl-btn" id="btn-next" title="Next">
+          <svg viewBox="0 0 24 24"><path d="M5 4l10 8-10 8V4ZM19 4v16"/></svg>
+        </button>
+        <button class="ctrl-btn" id="btn-repeat" title="Repeat">
+          <svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        </button>
+      </div>
+
+      <div id="player-progress-wrap">
+        <span id="time-current">0:00</span>
+        <div id="progress-bar" title="Seek">
+          <div id="progress-fill"></div>
+          <div id="progress-thumb"></div>
+        </div>
+        <span id="time-total">0:00</span>
+      </div>
+    </div>
+
+    <div id="player-right">
+      <svg viewBox="0 0 24 24" id="vol-icon"><path d="M11 5 6 9H2v6h4l5 4V5ZM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      <div id="volume-bar" title="Volume">
+        <div id="volume-fill"></div>
+        <div id="volume-thumb"></div>
+      </div>
+    </div>
+
+    <audio id="audio"></audio>
+  </div>
+
+  <!-- New Playlist Modal -->
+  <div id="modal-playlist" class="modal hidden">
+    <div class="modal-card">
+      <h3>New Playlist</h3>
+      <input type="text" id="modal-playlist-name" placeholder="Playlist name…" maxlength="50" />
+      <div class="modal-actions">
+        <button class="btn-ghost" id="btn-modal-cancel">Cancel</button>
+        <button class="btn-primary" id="btn-modal-create">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
