@@ -12,7 +12,7 @@
     "productName": "Takumi Player",
     "win": {
       "target": "nsis",
-      "icon": "assets/icon.ico"
+      "icon": "renderer/assets/icon.ico"
     },
     "nsis": {
       "oneClick": false,
