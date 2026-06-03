@@ -78,8 +78,18 @@
           <button class="btn-icon" id="btn-add-to-playlist-sel" title="Add selected to playlist" style="display:none">+ Playlist</button>
         </div>
 
+        <!-- Selection action bar (shown when tracks selected) -->
+        <div id="selection-bar" class="hidden">
+          <span id="selection-count">0 selected</span>
+          <button class="sel-btn" id="btn-sel-play">▶ Play</button>
+          <button class="sel-btn" id="btn-sel-add-playlist">+ Add to Playlist</button>
+          <button class="sel-btn danger" id="btn-sel-delete">✕ Remove</button>
+          <button class="sel-btn ghost" id="btn-sel-clear">Clear</button>
+        </div>
+
         <div id="track-list-wrap">
           <div id="track-list-header">
+            <span class="col-check"><span id="chk-select-all" class="row-chk" title="Select all"></span></span>
             <span class="col-num">#</span>
             <span class="col-title">Title</span>
             <span class="col-folder">Folder</span>
