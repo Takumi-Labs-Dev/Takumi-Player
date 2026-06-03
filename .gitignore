@@ -1,22 +1,7 @@
-# Node
 node_modules/
-
-# Build output
 dist/
 build/
+*.zip
+*.exe
 out/
-
-# Logs
-logs
-*.log
-
-# OS junk
-.DS_Store
-Thumbs.db
-
-# Env files
-.env
-
-# Optional (if Electron)
 release/
-app-release/
